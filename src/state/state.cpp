@@ -17,22 +17,20 @@ int State::evaluate(){
   //very simple example
   //define value
   int value[6] = {10, 50, 30, 30, 90, 10000};
-  int score;
-  //this player: score += ...
+  int now_score = 0;
   for(int i=0 ; i<BOARD_H ; i++){
     for(int j=0 ; j<BOARD_W ; j++){
       int now = this->board.board[this->player][i][j];
-      if(now) score += value[now-1];
+      if(now) now_score -= value[now-1];
     }
   }
-  //opponent: score -= ...
   for(int i=0 ; i<BOARD_H ; i++){
     for(int j=0 ; j<BOARD_W ; j++){
       int now = this->board.board[1 - this->player][i][j];
-      if(now) score -= value[now-1];
+      if(now) now_score += value[now-1];
     }
   }
-  return score;
+  return now_score;
 }
 
 
@@ -226,7 +224,6 @@ void State::get_legal_actions(){
       }
     }
   }
-  std::cout << "\n";
   this->legal_actions = all_actions;
 }
 
