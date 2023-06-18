@@ -16,18 +16,18 @@ int State::evaluate(){
 
   //very simple example
   //define value
-  int value[6] = {10, 50, 30, 30, 90, 10000};
+  int value[6] = {100, 500, 300, 300, 900, 1000000};
   int now_score = 0;
   for(int i=0 ; i<BOARD_H ; i++){
     for(int j=0 ; j<BOARD_W ; j++){
       int now = this->board.board[this->player][i][j];
-      if(now) now_score -= value[now-1];
+      if(now) now_score += value[now-1];
     }
   }
   for(int i=0 ; i<BOARD_H ; i++){
     for(int j=0 ; j<BOARD_W ; j++){
       int now = this->board.board[1 - this->player][i][j];
-      if(now) now_score += value[now-1];
+      if(now) now_score -= value[now-1];
     }
   }
   return now_score;
