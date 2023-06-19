@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <vector>
 #include <utility>
+#include <map>
 
 #include "../config.hpp"
 
@@ -47,7 +48,9 @@ class State{
     Board board;
     int player = 0;
     int score = 0;
+    bool promotion = false;
     std::vector<Move> legal_actions;
+    std::map<Move, std::pair<int, int>> oppn;
     
     State(){};
     State(int player): player(player){};

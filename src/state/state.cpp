@@ -48,6 +48,7 @@ State* State::next_state(Move move){
   //promotion for pawn
   if(moved == 1 && (to.first==BOARD_H-1 || to.first==0)){
     moved = 5;
+    promotion = true;
   }
   if(next.board[1-this->player][to.first][to.second]){
     next.board[1-this->player][to.first][to.second] = 0;
@@ -108,10 +109,15 @@ void State::get_legal_actions(){
           case 1: //pawn
             if(this->player && i<BOARD_H-1){
               //black
-              if(!oppn_board[i+1][j] && !self_board[i+1][j])
-                all_actions.push_back(Move(Point(i, j), Point(i+1, j)));
+              if(!oppn_board[i+1][j] && !self_board[i+1][j]){
+                Move this_move(Point(i, j), Point(i+1, j));
+                all_actions.push_back(this_move);
+                oppn[this_move] = {0, 1};
+              }
               if(j<BOARD_W-1 && (oppn_piece=oppn_board[i+1][j+1])>0){
-                all_actions.push_back(Move(Point(i, j), Point(i+1, j+1)));
+                Move this_move(Point(i, j), Point(i+1, j+1));
+                all_actions.push_back(this_move);
+                oppn[this_move] = {oppn_piece, 1};
                 if(oppn_piece==6){
                   this->game_state = WIN;
                   this->legal_actions = all_actions;
@@ -119,7 +125,9 @@ void State::get_legal_actions(){
                 }
               }
               if(j>0 && (oppn_piece=oppn_board[i+1][j-1])>0){
-                all_actions.push_back(Move(Point(i, j), Point(i+1, j-1)));
+                Move this_move(Point(i, j), Point(i+1, j-1));
+                all_actions.push_back(this_move);
+                oppn[this_move] = {oppn_piece, 1};
                 if(oppn_piece==6){
                   this->game_state = WIN;
                   this->legal_actions = all_actions;
@@ -128,10 +136,15 @@ void State::get_legal_actions(){
               }
             }else if(!this->player && i>0){
               //white
-              if(!oppn_board[i-1][j] && !self_board[i-1][j])
-                all_actions.push_back(Move(Point(i, j), Point(i-1, j)));
+              if(!oppn_board[i-1][j] && !self_board[i-1][j]){
+                Move this_move(Point(i, j), Point(i-1, j));
+                all_actions.push_back(this_move);
+                oppn[this_move] = {oppn_piece, 1};
+              }
               if(j<BOARD_W-1 && (oppn_piece=oppn_board[i-1][j+1])>0){
-                all_actions.push_back(Move(Point(i, j), Point(i-1, j+1)));
+                Move this_move(Point(i, j), Point(i-1, j+1));
+                all_actions.push_back(this_move);
+                oppn[this_move] = {oppn_piece, 1};
                 if(oppn_piece==6){
                   this->game_state = WIN;
                   this->legal_actions = all_actions;
@@ -139,7 +152,9 @@ void State::get_legal_actions(){
                 }
               }
               if(j>0 && (oppn_piece=oppn_board[i-1][j-1])>0){
-                all_actions.push_back(Move(Point(i, j), Point(i-1, j-1)));
+                Move this_move(Point(i, j), Point(i-1, j-1));
+                all_actions.push_back(this_move);
+                oppn[this_move] = {oppn_piece, 1};
                 if(oppn_piece==6){
                   this->game_state = WIN;
                   this->legal_actions = all_actions;
@@ -167,10 +182,11 @@ void State::get_legal_actions(){
                 if(p[0]>=BOARD_H || p[0]<0 || p[1]>=BOARD_W || p[1]<0) break;
                 now_piece = self_board[p[0]][p[1]];
                 if(now_piece) break;
-                
-                all_actions.push_back(Move(Point(i, j), Point(p[0], p[1])));
-                
+      
                 oppn_piece = oppn_board[p[0]][p[1]];
+                Move this_move(Point(i, j), Point(p[0], p[1]));
+                all_actions.push_back(this_move);
+                oppn[this_move] = {oppn_piece, now_piece};
                 if(oppn_piece){
                   if(oppn_piece==6){
                     this->game_state = WIN;
@@ -191,9 +207,11 @@ void State::get_legal_actions(){
               if(x>=BOARD_H || x<0 || y>=BOARD_W || y<0) continue;
               now_piece = self_board[x][y];
               if(now_piece) continue;
-              all_actions.push_back(Move(Point(i, j), Point(x, y)));
               
               oppn_piece = oppn_board[x][y];
+              Move this_move(Point(i, j), Point(x, y));
+              all_actions.push_back(this_move);
+              oppn[this_move] = {oppn_piece, 3};
               if(oppn_piece==6){
                 this->game_state = WIN;
                 this->legal_actions = all_actions;
@@ -209,10 +227,11 @@ void State::get_legal_actions(){
               if(p[0]>=BOARD_H || p[0]<0 || p[1]>=BOARD_W || p[1]<0) continue;
               now_piece = self_board[p[0]][p[1]];
               if(now_piece) continue;
-              
-              all_actions.push_back(Move(Point(i, j), Point(p[0], p[1])));
-              
+            
               oppn_piece = oppn_board[p[0]][p[1]];
+              Move this_move(Point(i, j), Point(p[0], p[1]));
+              all_actions.push_back(this_move);
+              oppn[this_move] = {oppn_piece, 6};
               if(oppn_piece==6){
                 this->game_state = WIN;
                 this->legal_actions = all_actions;
