@@ -32,7 +32,7 @@ int State::evaluate(){
       int now = this->board.board[1][i][j];
       if(now){
         black_score += value[now-1];
-        black_score += board.posValue[now-1][6-i][j];
+        black_score += board.posValue[now-1][5-i][j];
       }
     }
   }
