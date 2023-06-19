@@ -6,7 +6,7 @@
 
 
 int Minimax::judge(State *state, int depth, bool player){
-  if(state->game_state == WIN) return player? INT_MIN : INT_MAX;
+  if(state->game_state == WIN) return player? INT_MAX : INT_MIN;
   if(depth == 0) return state->evaluate();
   if(player){
     state->score = INT_MIN;
@@ -30,7 +30,7 @@ Move Minimax::get_move(State *state, int depth){
     Move bestmove = state->legal_actions[0];
     int best = INT_MIN;
     for(auto i : state->legal_actions){
-        int value = judge(state->next_state(i), depth, true);
+        int value = judge(state->next_state(i), depth, false);
         if(value > best){
             best = value;
             bestmove = i;

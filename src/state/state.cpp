@@ -14,23 +14,30 @@
 int State::evaluate(){
   // [TODO] design your own evaluation function
 
-  //very simple example
+  //very simple example + piece value table
   //define value
   int value[6] = {100, 500, 300, 300, 900, 1000000};
-  int now_score = 0;
+  int white_score = 0, black_score = 0;
   for(int i=0 ; i<BOARD_H ; i++){
     for(int j=0 ; j<BOARD_W ; j++){
-      int now = this->board.board[this->player][i][j];
-      if(now) now_score += value[now-1];
+      int now = this->board.board[0][i][j];
+      if(now){
+        white_score += value[now-1];
+        white_score += board.posValue[now-1][i][j];
+      }
     }
   }
   for(int i=0 ; i<BOARD_H ; i++){
     for(int j=0 ; j<BOARD_W ; j++){
-      int now = this->board.board[1 - this->player][i][j];
-      if(now) now_score -= value[now-1];
+      int now = this->board.board[1][i][j];
+      if(now){
+        black_score += value[now-1];
+        black_score += board.posValue[now-1][6-i][j];
+      }
     }
   }
-  return now_score;
+  int diff = white_score - black_score;
+  return this->player? -diff:diff;
 }
 
 
